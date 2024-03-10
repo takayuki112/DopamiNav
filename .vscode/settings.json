@@ -1,0 +1,14 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/aaryan-atp/dopaminav_ws/devel/lib/python3/dist-packages",
+        "/home/aaryan-atp/nero-forte/devel/lib/python3/dist-packages",
+        "/home/aaryan-atp/igvc_ws/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/aaryan-atp/dopaminav_ws/devel/lib/python3/dist-packages",
+        "/home/aaryan-atp/nero-forte/devel/lib/python3/dist-packages",
+        "/home/aaryan-atp/igvc_ws/devel/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages"
+    ]
+}
