@@ -1,0 +1,73 @@
+# Global costmap parameters
+global_costmap:
+  global_frame: map
+  robot_base_frame: base_link
+  update_frequency: 1.0
+  publish_frequency: 0.5
+  width: 10.0
+  height: 10.0
+  resolution: 0.05
+  static_map: true
+  rolling_window: false
+  plugins:
+    - {name: static_layer, type: "costmap_2d::StaticLayer"}
+    - {name: obstacle_layer, type: "costmap_2d::ObstacleLayer"}
+    - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+
+# Local costmap parameters
+local_costmap:
+  global_frame: odom
+  robot_base_frame: base_link
+  update_frequency: 5.0
+  publish_frequency: 2.0
+  width: 3.0
+  height: 3.0
+  resolution: 0.05
+  static_map: false
+  rolling_window: true
+  plugins:
+    - {name: obstacle_layer, type: "costmap_2d::ObstacleLayer"}
+    - {name: inflation_layer, type: "costmap_2d::InflationLayer"}
+
+# Global planner parameters
+base_global_planner:
+  planner_frequency: 1.0
+  planner_window_x: 5.0
+  planner_window_y: 5.0
+  default_tolerance: 0.5
+  planner: navfn/NavfnROS
+
+# Local planner parameters
+TrajectoryPlannerROS:
+  max_vel_x: 0.5
+  min_vel_x: 0.1
+  max_vel_theta: 0.3
+  min_in_place_vel_theta: 0.2
+  acc_lim_theta: 0.8
+  acc_lim_x: 0.5
+  acc_lim_y: 0.5
+  holonomic_robot: false
+  meter_scoring: true
+
+  # Goal tolerance parameters
+  yaw_goal_tolerance: 0.1
+  xy_goal_tolerance: 0.2
+  latch_xy_goal_tolerance: false
+
+  # Forward simulation parameters
+  sim_time: 1.0
+  sim_granularity: 0.025
+  vx_samples: 20
+  vtheta_samples: 20
+  controller_frequency: 20.0
+
+  # Obstacle avoidance parameters
+  pdist_scale: 0.6
+  gdist_scale: 0.8
+  occdist_scale: 0.01
+  heading_lookahead: 0.325
+  dwa: true
+  publish_cost_grid_pc: true
+  global_frame_id: odom
+  oscillation_timeout: 10
+  oscillation_distance: 0.2

@@ -1,0 +1,153 @@
+# Global costmap parameters
+global_costmap:
+  global_frame: map
+  robot_base_frame: base_link
+  update_frequency: 1.0  # Consider increasing for dynamic environments
+  publish_frequency: 0.5
+  width: 20.0  # Adjust based on the expected maximum range of your environment
+  height: 20.0
+  resolution: 0.05  # Adjust if finer detail is needed or computational resources are limited
+  static_map: true
+  rolling_window: false
+  always_send_full_costmap: true
+  plugins:
+    - {name: static_layer, type: "costmap_2d::StaticLayer"}
+    - {name: obstacle_layer, type: "costmap_2d::ObstacleLayer",
+       enabled: true,
+       obstacle_range: 2.5,  # Adjust based on sensor range
+       raytrace_range: 3.0,
+       track_unknown_space: true,
+       combination_method: 1}
+    - {name: inflation_layer, type: "costmap_2d::InflationLayer",
+       inflation_radius: 0.55}  # Adjust to match robot size and safety margin
+
+# Local costmap parameters
+base_local_planner: "teb_local_planner/TebLocalPlannerROS"
+
+TebLocalPlannerROS:
+  map_frame: /map
+
+  # Robot configuration parameters
+  max_vel_x: 0.5
+  max_vel_theta: 0.3
+  acc_lim_x: 0.5
+  acc_lim_theta: 0.8
+
+  # Goal tolerance parameters
+  xy_goal_tolerance: 0.2
+  yaw_goal_tolerance: 0.1
+  free_goal_vel: false
+
+  # Obstacle and costmap parameters
+  footprint_model:
+    type: "point"
+    radius: 0.2  # Or specify your robot's footprint here
+  costmap_converter_plugin: ""
+  costmap_converter_spin_thread: true
+  costmap_obstacles_behind_robot_dist: 1.0
+  inflation_dist: 0.1
+  include_costmap_obstacles: true
+  include_dynamic_obstacles: true
+
+  # Optimization parameters
+  no_inner_iterations: 5
+  no_outer_iterations: 4
+  optimization_activate: true
+  optimization_verbose: false
+  penalty_epsilon: 0.1
+  weight_max_vel_x: 2
+  weight_max_vel_theta: 1
+  weight_acc_lim_x: 1
+  weight_acc_lim_theta: 1
+  weight_kinematics_nh: 1000
+  weight_kinematics_forward_drive: 1
+  weight_kinematics_turning_radius: 1
+  weight_optimaltime: 1
+  weight_obstacle: 50
+  weight_dynamic_obstacle: 10  # Not active if include_dynamic_obstacles is false
+
+  # ... and many more. Check the full parameter list in the TEB documentation or package.
+
+
+
+# Global planner parameters
+# base_global_planner:
+#   planner_window_x: 10.0
+#   planner_window_y: 10.0
+#   default_tolerance: 0.5  # Adjust based on how close the robot needs to get to the goal
+#   use_dijkstra: true
+#   use_quadratic: true
+#   use_grid_path: false
+#   old_navfn_behavior: false
+#   planner: navfn/NavfnROS
+#   allow_unknown: true  # Allows planning through unknown space
+
+base_global_planner: "global_planner/GlobalPlanner"
+GlobalPlanner:
+  allow_unknown: true  # Allows planning through unknown space, similar to navfn
+  use_dijkstra: true  # Use Dijkstra's algorithm; set to false for A*
+  use_quadratic: true  # Use a quadratic approximation for the cost function
+  use_grid_path: false  # Generate a path that strictly follows the grid
+  old_navfn_behavior: false  # More efficient planning algorithm
+  visualize_potential: true  # If you want to visualize the potential in RViz
+  lethal_cost: 253  # The cost value considered lethal
+  neutral_cost: 50  # Cost for traversing a cell under normal conditions
+  cost_factor: 0.55  # Factor for converting costs in planning
+  publish_potential: true  # Publish potential map
+  orientation_mode: 0  # Adjust based on your requirements for path orientation
+  orientation_filter: 0.5  # Filter to apply to path orientations
+
+
+
+# Local planner parameters
+# TrajectoryPlannerROS:
+#   max_vel_x: 0.5
+#   min_vel_x: 0.1
+#   max_vel_theta: 0.3
+#   min_in_place_vel_theta: 0.2
+#   acc_lim_theta: 0.8
+#   acc_lim_x: 0.5
+#   acc_lim_y: 0.5
+#   holonomic_robot: false
+#   meter_scoring: true
+#   yaw_goal_tolerance: 0.1  # Consider adjusting for goal orientation precision
+#   xy_goal_tolerance: 0.2  # Adjust based on acceptable distance to goal
+#   latch_xy_goal_tolerance: false
+#   sim_time: 1.0
+#   sim_granularity: 0.025
+#   vx_samples: 20
+#   vtheta_samples: 20
+#   controller_frequency: 20.0
+#   pdist_scale: 0.6
+#   gdist_scale: 0.8
+#   occdist_scale: 0.01
+#   heading_lookahead: 0.325
+#   dwa: true
+#   publish_cost_grid_pc: true
+#   global_frame_id: odom
+#   oscillation_timeout: 10
+  oscillation_distance: 0.2
+
+
+  # Goal tolerance parameters
+  yaw_goal_tolerance: 0.1
+  xy_goal_tolerance: 0.2
+  latch_xy_goal_tolerance: false
+
+  # Forward simulation parameters
+  sim_time: 1.0
+  sim_granularity: 0.025
+  vx_samples: 20
+  vtheta_samples: 20
+  controller_frequency: 20.0
+
+  # Obstacle avoidance parameters
+  pdist_scale: 0.6
+  gdist_scale: 0.8
+  occdist_scale: 0.01
+  heading_lookahead: 0.325
+  dwa: true
+  publish_cost_grid_pc: true
+  global_frame_id: odom
+  oscillation_timeout: 10
+  oscillation_distance: 0.2

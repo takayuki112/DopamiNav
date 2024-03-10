@@ -1,0 +1,221 @@
+shutdown_costmaps: false
+controller_frequency: 10.0
+planner_patience: 5.0
+controller_patience: 15.0
+conservative_reset_dist: 3.0
+planner_frequency: 5.0
+oscillation_timeout: 10.0
+oscillation_distance: 0.2 
+
+# Global costmap parameters
+global_costmap:
+  global_frame: odom
+  robot_base_frame: base_link
+
+  update_frequency: 10.0
+  publish_frequency: 10.0
+  transform_tolerance: 0.5
+
+  static_map: true 
+  
+  #For pointcloud map
+  trinary_costmap: false
+
+# Local costmap parameters
+TebLocalPlannerROS:
+
+ odom_topic: odom
+    
+ # Trajectory
+  
+ teb_autosize: True
+ dt_ref: 0.3
+ dt_hysteresis: 0.1
+ max_samples: 500
+ global_plan_overwrite_orientation: True
+ allow_init_with_backwards_motion: False
+ max_global_plan_lookahead_dist: 3.0
+ global_plan_viapoint_sep: -1
+ global_plan_prune_distance: 1
+ exact_arc_length: False
+ feasibility_check_no_poses: 5
+ publish_feedback: False
+    
+ # Robot
+         
+ max_vel_x: 1.5 #0.4 #2.0 #1.5
+ max_vel_x_backwards: 0.2
+ max_vel_y: 0.0
+ max_vel_theta: 1.0 #0.38 #1.0 #0.8 #0.6
+ acc_lim_x: 0.5 #0.2 #0.5
+ acc_lim_theta: 1.0 #0.2 #1.0 #0.5
+ min_turning_radius: 0.0 # diff-drive robot (can turn on place!)
+
+ footprint_model:
+   type: "polygon"
+
+ # GoalTolerance
+    
+ xy_goal_tolerance: 0.2
+ yaw_goal_tolerance: 0.1
+ free_goal_vel: False
+ complete_global_plan: True
+    
+ # Obstacles
+    
+ min_obstacle_dist: 0.25 # This value must also include our robot radius, since footprint_model is set to "point".
+ inflation_dist: 0.6
+ include_costmap_obstacles: True
+ costmap_obstacles_behind_robot_dist: 1.5
+ obstacle_poses_affected: 15
+
+ dynamic_obstacle_inflation_dist: 0.6
+ include_dynamic_obstacles: True
+
+ costmap_converter_plugin: ""
+ costmap_converter_spin_thread: True
+ costmap_converter_rate: 5
+
+ # Optimization
+    
+ no_inner_iterations: 5
+ no_outer_iterations: 4
+ optimization_activate: True
+ optimization_verbose: False
+ penalty_epsilon: 0.1
+ obstacle_cost_exponent: 4
+ weight_max_vel_x: 2
+ weight_max_vel_theta: 1
+ weight_acc_lim_x: 1
+ weight_acc_lim_theta: 1
+ weight_kinematics_nh: 1000
+ weight_kinematics_forward_drive: 1
+ weight_kinematics_turning_radius: 1
+ weight_optimaltime: 1 # must be > 0
+ weight_shortest_path: 0
+ weight_obstacle: 100
+ weight_inflation: 0.2
+ weight_dynamic_obstacle: 10
+ weight_dynamic_obstacle_inflation: 0.2
+ weight_viapoint: 1
+ weight_adapt_factor: 2
+
+ # Homotopy Class Planner
+
+ enable_homotopy_class_planning: True
+ enable_multithreading: True
+ max_number_classes: 4
+ selection_cost_hysteresis: 1.0
+ selection_prefer_initial_plan: 0.9
+ selection_obst_cost_scale: 100.0
+ selection_alternative_time_cost: False
+ 
+ roadmap_graph_no_samples: 15
+ roadmap_graph_area_width: 5
+ roadmap_graph_area_length_scale: 1.0
+ h_signature_prescaler: 0.5
+ h_signature_threshold: 0.1
+ obstacle_heading_threshold: 0.45
+ switching_blocking_period: 0.0
+ viapoints_all_candidates: True
+ delete_detours_backwards: True
+ max_ratio_detours_duration_best_duration: 3.0
+ visualize_hc_graph: False
+ visualize_with_time_as_z_axis_scale: False
+
+# Recovery
+ 
+ shrink_horizon_backup: True
+ shrink_horizon_min_duration: 10
+ oscillation_recovery: True
+ oscillation_v_eps: 0.1
+ oscillation_omega_eps: 0.1
+ oscillation_recovery_min_duration: 10
+ oscillation_filter_duration: 10
+
+#Footprint
+ footprint_model:
+  type: "polygon"
+  vertices: [[0.2, 0.35], [0.2, -0.35], [-0.75, -0.27], [-0.75, 0.25]]
+
+# Global planner parameters
+# base_global_planner:
+#   planner_window_x: 10.0
+#   planner_window_y: 10.0
+#   default_tolerance: 0.5  # Adjust based on how close the robot needs to get to the goal
+#   use_dijkstra: true
+#   use_quadratic: true
+#   use_grid_path: false
+#   old_navfn_behavior: false
+#   planner: navfn/NavfnROS
+#   allow_unknown: true  # Allows planning through unknown space
+
+base_global_planner: "global_planner/GlobalPlanner"
+GlobalPlanner:
+  allow_unknown: true  # Allows planning through unknown space, similar to navfn
+  use_dijkstra: true  # Use Dijkstra's algorithm; set to false for A*
+  use_quadratic: true  # Use a quadratic approximation for the cost function
+  use_grid_path: false  # Generate a path that strictly follows the grid
+  old_navfn_behavior: false  # More efficient planning algorithm
+  visualize_potential: true  # If you want to visualize the potential in RViz
+  lethal_cost: 253  # The cost value considered lethal
+  neutral_cost: 50  # Cost for traversing a cell under normal conditions
+  cost_factor: 0.55  # Factor for converting costs in planning
+  publish_potential: true  # Publish potential map
+  orientation_mode: 0  # Adjust based on your requirements for path orientation
+  orientation_filter: 0.5  # Filter to apply to path orientations
+
+
+
+# Local planner parameters
+# TrajectoryPlannerROS:
+#   max_vel_x: 0.5
+#   min_vel_x: 0.1
+#   max_vel_theta: 0.3
+#   min_in_place_vel_theta: 0.2
+#   acc_lim_theta: 0.8
+#   acc_lim_x: 0.5
+#   acc_lim_y: 0.5
+#   holonomic_robot: false
+#   meter_scoring: true
+#   yaw_goal_tolerance: 0.1  # Consider adjusting for goal orientation precision
+#   xy_goal_tolerance: 0.2  # Adjust based on acceptable distance to goal
+#   latch_xy_goal_tolerance: false
+#   sim_time: 1.0
+#   sim_granularity: 0.025
+#   vx_samples: 20
+#   vtheta_samples: 20
+#   controller_frequency: 20.0
+#   pdist_scale: 0.6
+#   gdist_scale: 0.8
+#   occdist_scale: 0.01
+#   heading_lookahead: 0.325
+#   dwa: true
+#   publish_cost_grid_pc: true
+#   global_frame_id: odom
+#   oscillation_timeout: 10
+  # oscillation_distance: 0.2
+
+
+  # Goal tolerance parameters
+  yaw_goal_tolerance: 0.1
+  xy_goal_tolerance: 0.2
+  latch_xy_goal_tolerance: false
+
+  # Forward simulation parameters
+  sim_time: 1.0
+  sim_granularity: 0.025
+  vx_samples: 20
+  vtheta_samples: 20
+  controller_frequency: 20.0
+
+  # Obstacle avoidance parameters
+  pdist_scale: 0.6
+  gdist_scale: 0.8
+  occdist_scale: 0.01
+  heading_lookahead: 0.325
+  dwa: true
+  publish_cost_grid_pc: true
+  global_frame_id: odom
+  oscillation_timeout: 10
+  oscillation_distance: 0.2
