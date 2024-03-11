@@ -124,6 +124,15 @@ class DopamiNav(gym.Env):
                 break
             
         return poses
+    
+    def step(self):
+        pass
+
+    def reset(self):
+        pass
+    
+    def render(self):
+        pass
 
 
         
